@@ -367,3 +367,91 @@ void Ordenar(char szPalabras[][TAMTOKEN], int elementos, int iEstadisticas[], in
 		}
 	}
 }
+void OrdenarPorFrecuencia(char szPalabras[][TAMTOKEN], int iNumElementos, int iPeso[], int ascendente) //es es una funcion para la lista de candidatas
+{
+	int i, j;
+	char temp[TAMTOKEN];
+	int tempPeso;
+
+	if (ascendente == 0)
+	{
+		for (i = 0; i < iNumElementos - 1; i++)
+		{
+			for (j = 0; j < iNumElementos - 1 - i; j++)
+			{
+				// Cambiado a < en lugar de >
+				if (iPeso[j] < iPeso[j + 1] || (iPeso[j] == iPeso[j + 1] && strcmp(szPalabras[j], szPalabras[j + 1]) > 0))
+				{
+					// Intercambiar palabras
+					strcpy(temp, szPalabras[j]);
+					strcpy(szPalabras[j], szPalabras[j + 1]);
+					strcpy(szPalabras[j + 1], temp);
+
+					// Intercambiar pesos
+					tempPeso = iPeso[j];
+					iPeso[j] = iPeso[j + 1];
+					iPeso[j + 1] = tempPeso;
+				}
+			}
+		}
+	}
+}
+
+int Revertir(int posicion, char szPalabraLeidaCopia2[TAMTOKEN], char szPalabrasSugeridas[][TAMTOKEN], int jPalabra, int longitud)
+{
+	int posicion2 = -1;
+	int apuntador = 0;
+	int k, h, m;
+
+	char auxiliarPal[TAMTOKEN];
+	char auxiliarPal2[TAMTOKEN];
+	char letras2[] = { "      " };
+
+	if (posicion != 0)
+	{
+		for (k = 0; k < longitud; k++)
+		{
+			if (szPalabraLeidaCopia2[k] == letras2[0])
+			{
+				posicion2 = k;
+			}
+		}
+
+		memset(auxiliarPal, 0, 50);
+		memset(auxiliarPal2, 0, 50);
+
+		apuntador = 0;
+		for (h = 0; h < posicion2; h++)
+		{
+			auxiliarPal[apuntador] = szPalabraLeidaCopia2[h];
+			apuntador++;
+		}
+
+		apuntador = 0;
+		for (m = posicion2 + 1; m < longitud; m++)
+		{
+			auxiliarPal2[apuntador] = szPalabraLeidaCopia2[m];
+			apuntador++;
+		}
+
+		if (posicion2 >= 0)
+		{
+			strcat(auxiliarPal, " ");
+			strcat(auxiliarPal, auxiliarPal2);
+		}
+		else
+		{
+			strcat(auxiliarPal, auxiliarPal2);
+		}
+		strcpy(szPalabrasSugeridas[jPalabra], auxiliarPal);
+		jPalabra++;
+	}
+	else
+	{
+		strcpy(szPalabrasSugeridas[jPalabra], szPalabraLeidaCopia2);
+		jPalabra++;
+	}
+
+	return jPalabra;
+}
+
