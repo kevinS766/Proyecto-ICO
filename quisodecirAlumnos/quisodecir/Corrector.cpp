@@ -89,3 +89,37 @@ void	ClonaPalabras(
 	strcpy(szPalabrasSugeridas[0], szPalabraLeida); //lo que sea que se capture, es sugerencia
 	iNumSugeridas = 1;							//Una sola palabra sugerida
 }
+
+
+
+//funciones utiles
+
+void elimCaract(char* palabra)					//elimina s mbolos y convierte a min sculas.
+
+{
+	char simbolos[] = ". ,;()";
+	int i, j, apuntador = 0;
+
+	for (i = 0; i < strlen(palabra); i++)
+	{
+		int anadir = 1;
+		for (j = 0; j < strlen(simbolos); j++)
+		{
+			if (palabra[i] == simbolos[j])
+			{
+				anadir = 0;
+			}
+		}
+		if (anadir == 1)
+		{
+			palabra[apuntador] = palabra[i];
+			apuntador++;
+		}
+	}
+	palabra[apuntador] = 0;
+
+	for (i = 0; palabra[i] != '\0'; i++)
+	{
+		palabra[i] = tolower(palabra[i]);
+	}
+}
