@@ -21,13 +21,27 @@
 	int		iEstadisticas[]			:	Arreglo con el numero de veces que aparecen las palabras en el diccionario
 	int &	iNumElementos			:	Numero de elementos en el diccionario
 ******************************************************************************************************************/
-void	Diccionario			(char *szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int &iNumElementos)
+void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos)
 {
+	FILE* fp;
+	char palabra[TAMTOKEN];
+	iNumElementos = 0;
+	int i;
 
-	//Sustituya estas lineas por su código
-	iNumElementos=1;
-	strcpy(szPalabras[0],"AquiVaElDiccionario");
-	iEstadisticas[0] = 1; // la primer palabra aparece solo una vez.
+	//open file											//OK
+	fp = fopen(szNombre, "r");
+
+	while (feof(fp) == 0)
+	{
+		fscanf(fp, "%s", palabra);
+		elimCaract(palabra);
+		strcpy(szPalabras[iNumElementos], palabra);
+		iNumElementos++;
+	}
+
+	iNumElementos--;
+	Supr(szPalabras, iNumElementos, iEstadisticas);
+	Ordenar(szPalabras, iNumElementos, iEstadisticas, 1);
 }
 
 /*****************************************************************************************************************
@@ -53,7 +67,7 @@ void	ListaCandidatas		(
 	int &	iNumLista)							//Numero de elementos en la szListaFinal
 {
 
-	//Sustituya estas lineas por su código
+	//Sustituya estas lineas por su c digo
 	strcpy(szListaFinal[0], szPalabrasSugeridas[ 0] ); //la palabra candidata
 	iPeso[0] = iEstadisticas[0];			// el peso de la palabra candidata
 	
@@ -71,7 +85,7 @@ void	ClonaPalabras(
 	char	szPalabrasSugeridas[][TAMTOKEN], 	//Lista de palabras clonadas
 	int &	iNumSugeridas)						//Numero de elementos en la lista
 {
-	//Sustituya estas lineas por su código
+	//Sustituya estas lineas por su c digo
 	strcpy(szPalabrasSugeridas[0], szPalabraLeida); //lo que sea que se capture, es sugerencia
 	iNumSugeridas = 1;							//Una sola palabra sugerida
 }
