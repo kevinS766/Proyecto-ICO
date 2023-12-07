@@ -56,23 +56,189 @@ void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[
 	int		iPeso[],							//Peso de las palabras en la lista final
 	int &	iNumLista)							//Numero de elementos en la szListaFinal
 ******************************************************************************************************************/
-void	ListaCandidatas		(
-	char	szPalabrasSugeridas[][TAMTOKEN],	//Lista de palabras clonadas
-	int		iNumSugeridas,						//Lista de palabras clonadas
-	char	szPalabras[][TAMTOKEN],				//Lista de palabras del diccionario
-	int		iEstadisticas[],					//Lista de las frecuencias de las palabras
-	int		iNumElementos,						//Numero de elementos en el diccionario
-	char	szListaFinal[][TAMTOKEN],			//Lista final de palabras a sugerir
-	int		iPeso[],							//Peso de las palabras en la lista final
-	int &	iNumLista)							//Numero de elementos en la szListaFinal
+void	ClonaPalabras(
+	char* szPalabraLeida,						// Palabra a clonar
+	char szPalabrasSugeridas[][TAMTOKEN], 	//Lista de palabras clonadas
+	int& iNumSugeridas)						//Numero de elementos en la lista
 {
+	int longi, posic = 0;
+	int a, b, c, bPalabra = 0, ptr, bPtr, cont = 0;
+	int posicion2 = 0;
 
-	//Sustituya estas lineas por su c digo
-	strcpy(szListaFinal[0], szPalabrasSugeridas[ 0] ); //la palabra candidata
-	iPeso[0] = iEstadisticas[0];			// el peso de la palabra candidata
-	
-	iNumLista = 1;							//Una sola palabra candidata
+	char alfabeto[] = { "abcdefghijklmnopqrstuvwxyz" };
+	char letrasAcc[] = { "ñáéíóú" };
+
+	char palabraLeidaCopia[TAMTOKEN];
+	char palabraLeidaCopia2[TAMTOKEN];
+	char finPal[TAMTOKEN];
+	char tempPalab[TAMTOKEN];
+	char tempPalab2[TAMTOKEN];
+
+	longi = strlen(szPalabraLeida);
+
+	for (a = 0; a < longi; a++)
+	{
+		for (b = 0; b < strlen(alfabeto); b++)
+		{
+			if (szPalabraLeida[a] == alfabeto[b])
+			{
+				cont++;
+			}
+			else if (szPalabraLeida[a] == letrasAcc[0] || szPalabraLeida[a] == letrasAcc[1] || szPalabraLeida[a] == letrasAcc[2] || szPalabraLeida[a] == letrasAcc[3] || szPalabraLeida[a] == letrasAcc[4] || szPalabraLeida[a] == letrasAcc[5])
+			{
+				posic = a;
+			}
+		}
+	}
+	if (posic != 0)
+	{
+		ptr = 0;
+		for (a = 0; a < longi; a++)
+		{
+			if (szPalabraLeida[a] != letrasAcc[1])
+			{
+				finPal[ptr] = szPalabraLeida[a];
+				ptr++;
+			}
+		}
+		strcpy(szPalabraLeida, finPal);
+		longi--;
+	}
+	//inicio eliminacion							
+	for (a = 0; a < longi; a++)
+	{
+		ptr = 0;
+		memset(finPal, 0, 50);
+
+		for (b = 0; b < longi; b++)
+		{
+			if (a != b)
+			{
+				finPal[ptr] = szPalabraLeida[b];
+				ptr++;
+			}
+		}
+		bPalabra = Revertir(posic, finPal, szPalabrasSugeridas, bPalabra, longi);
+	}
+	//aqui termina la eliminaci n!!!
+
+	//ahora el intercambio							
+	for (b = 1; b < longi; b++)
+	{
+
+		strcpy(palabraLeidaCopia2, szPalabraLeida);
+		strcpy(palabraLeidaCopia, szPalabraLeida);
+
+		for (a = 0; a < longi - b; a++)
+		{
+			palabraLeidaCopia2[a + b] = palabraLeidaCopia2[a + (b - 1)];
+			palabraLeidaCopia2[a + (b - 1)] = palabraLeidaCopia[a + b];
+
+			bPalabra = Revertir(posic, palabraLeidaCopia2, szPalabrasSugeridas, bPalabra, longi);
+		}
+	}
+	//aqui termina el intercambio!!!
+
+	//intercambio de car cteres					O
+	for (a = 0; a < longi; a++)
+	{
+		strcpy(palabraLeidaCopia, szPalabraLeida);
+
+		for (b = 0; b < strlen(alfabeto); b++)
+		{
+			palabraLeidaCopia[a] = alfabeto[b];
+			bPalabra = Revertir(posic, palabraLeidaCopia, szPalabrasSugeridas, bPalabra, longi);
+		}
+	}
+
+	for (a = 0; a < longi; a++)
+	{
+		strcpy(palabraLeidaCopia, szPalabraLeida);
+		for (b = 0; b < 6; b++)
+		{
+			for (int k = 0; k < 50; k++)			//memset?
+			{
+				tempPalab[k] = 0;
+				tempPalab2[k] = 0;
+			}
+			ptr = 0;
+			for (c = 0; c < a; c++)
+			{
+				tempPalab[ptr] = palabraLeidaCopia[c];
+				ptr++;
+			}
+			ptr = 0;
+			for (c = a + 1; c < longi; c++)
+			{
+				tempPalab2[ptr] = palabraLeidaCopia[c];
+				ptr++;
+			}
+			switch (b)								//para acentos
+			{
+			case 0:
+				strcat(tempPalab, "ñ");
+				strcat(tempPalab, tempPalab2);
+				break;
+			case 1:
+				strcat(tempPalab, "á");
+				strcat(tempPalab, tempPalab2);
+				break;
+			case 2:
+				strcat(tempPalab, "é");
+				strcat(tempPalab, tempPalab2);
+				break;
+			case 3:
+				strcat(tempPalab, "í");
+				strcat(tempPalab, tempPalab2);
+				break;
+			case 4:
+				strcat(tempPalab, "ó");
+				strcat(tempPalab, tempPalab2);
+				break;
+			case 5:
+				strcat(tempPalab, "ú");
+				strcat(tempPalab, tempPalab2);
+				break;
+			}
+			bPalabra = Revertir(posic, tempPalab, szPalabrasSugeridas, bPalabra, longi);
+		}
+	}
+	//aqui acaba el cambio de caracteres!!!
+
+	//poner caracteres entre caracteres							OK!
+	for (a = 0; a < longi + 1; a++)
+	{
+		strcpy(palabraLeidaCopia, szPalabraLeida);
+		for (b = 0; b < strlen(alfabeto); b++)
+		{
+			for (int k = 0; k < 50; k++)
+			{
+				tempPalab[k] = 0;
+				tempPalab2[k] = 0;
+			}
+			ptr = 0;
+			for (c = 0; c < a; c++)
+			{
+				tempPalab[ptr] = palabraLeidaCopia[c];
+				ptr++;
+			}
+			tempPalab[ptr] = alfabeto[b];
+
+			ptr = 0;
+			for (c = a; c < longi; c++)
+			{
+				tempPalab2[ptr] = palabraLeidaCopia[c];
+				ptr++;
+			}
+			strcat(tempPalab, tempPalab2);
+			bPalabra = Revertir(posic, tempPalab, szPalabrasSugeridas, bPalabra, longi);
+		}
+	}
+	//aqui termina poner caracteres en caracteres
+
+	iNumSugeridas = bPalabra + 1;
 }
+
 
 /*****************************************************************************************************************
 	ClonaPalabras: toma una palabra y obtiene todas las combinaciones y permutaciones requeridas por el metodo
