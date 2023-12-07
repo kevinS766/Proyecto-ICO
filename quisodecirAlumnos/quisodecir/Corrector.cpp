@@ -123,3 +123,81 @@ void elimCaract(char* palabra)					//elimina s mbolos y convierte a min sculas.
 		palabra[i] = tolower(palabra[i]);
 	}
 }
+
+void Supr(char szPalabras[][TAMTOKEN], int& elementos, int iEstadisticas[])	//elimina duplicados.
+{
+	int i, j, k;
+	for (i = 0; i < elementos; i++)
+	{
+		iEstadisticas[i]++;
+	}
+
+	for (i = 0; i < elementos; i++)
+	{
+		for (j = i + 1; j < elementos; j++)
+		{
+			if (strcmp(szPalabras[i], szPalabras[j]) == 0)
+			{
+				iEstadisticas[i] += 1;
+				for (k = j; k < elementos; k++)
+				{
+					strcpy(szPalabras[k], szPalabras[k + 1]);
+				}
+				elementos--;
+				j--;
+			}
+		}
+	}
+}
+
+void Ordenar(char szPalabras[][TAMTOKEN], int elementos, int iEstadisticas[], int opcion)
+{
+	int i, j;
+	char aux[TAMTOKEN];
+	int auxNum;
+
+	if (opcion == 0)
+	{
+		for (i = 0; i < elementos; i++)
+		{
+			for (j = 0; j < elementos - 1; j++)
+			{
+				if (strcmp(szPalabras[j], szPalabras[j + 1]) > 0)
+				{
+					strcpy(aux, szPalabras[j]);
+					strcpy(szPalabras[j], szPalabras[j + 1]);
+					strcpy(szPalabras[j + 1], aux);
+
+					auxNum = iEstadisticas[j];
+					iEstadisticas[j] = iEstadisticas[j + 1];
+					iEstadisticas[j + 1] = auxNum;
+				}
+			}
+		}
+	}
+	else if (opcion == 1)
+	{
+		for (i = 0; i < elementos; i++)
+		{
+			for (j = 0; j < elementos - 1; j++)
+			{
+				if (strcmp(szPalabras[j], szPalabras[j + 1]) > 0)
+				{
+					strcpy(aux, szPalabras[j]);
+					strcpy(szPalabras[j], szPalabras[j + 1]);
+					strcpy(szPalabras[j + 1], aux);
+
+					auxNum = iEstadisticas[j];
+					iEstadisticas[j] = iEstadisticas[j + 1];
+					iEstadisticas[j + 1] = auxNum;
+				}
+				else if (strcmp(szPalabras[j], szPalabras[j + 1]) == 0 && iEstadisticas[j] > iEstadisticas[j + 1])
+				{
+					auxNum = iEstadisticas[j];
+					iEstadisticas[j] = iEstadisticas[j + 1];
+					iEstadisticas[j + 1] = auxNum;
+				}
+			}
+		}
+	}
+}
