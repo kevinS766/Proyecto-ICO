@@ -54,8 +54,38 @@ void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[
 	int		iNumElementos,						//Numero de elementos en el diccionario
 	char	szListaFinal[][TAMTOKEN],			//Lista final de palabras a sugerir
 	int		iPeso[],							//Peso de las palabras en la lista final
-	int &	iNumLista)							//Numero de elementos en la szListaFinal
+	int &	iNumLista)	
+
+						//Numero de elementos en la szListaFinal
 ******************************************************************************************************************/
+void ListaCandidatas(
+    char szPalabrasSugeridas[][TAMTOKEN], int iNumSugeridas, char szPalabras[][TAMTOKEN], int iEstadisticas[], int iNumElementos, char szListaFinal[][TAMTOKEN], int iPeso[], int& iNumLista)
+{
+    int i, j;
+    iNumLista = 0;
+    int iEstadisticas2[100];
+
+    for (i = 0; i < iNumSugeridas; i++)
+    {
+        for (j = 0; j < iNumElementos; j++)
+        {
+            if (strcmp(szPalabrasSugeridas[i], szPalabras[j]) == 0)
+            {
+                strcpy(szListaFinal[iNumLista], szPalabras[j]);
+                iPeso[iNumLista] = iEstadisticas[j];
+                iNumLista++;
+            }
+        }
+    }
+
+    // Supr(szListaFinal, iNumLista, iEstadisticas2); // Comentario: parece que falta la implementación de Supr
+
+	OrdenarPorFrecuencia(szListaFinal, iNumLista, iPeso, 0); // Ordenar de mayor a menor
+
+}
+
+
+
 void	ClonaPalabras(
 	char* szPalabraLeida,						// Palabra a clonar
 	char szPalabrasSugeridas[][TAMTOKEN], 	//Lista de palabras clonadas
